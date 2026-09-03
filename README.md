@@ -1,29 +1,40 @@
 # REF.
 
-An independent archive of visual references.
+An independent visual archive of things worth keeping for reference.
 
-## GitHub Pages
+## How it works
 
-This repository contains a static site ready to publish with GitHub Pages.
+The design lives in:
+- `index.html`
+- `styles.css`
+- `app.js`
 
-### Publish
-1. Open **Settings → Pages**
-2. Under **Build and deployment**, select **Deploy from a branch**
-3. Choose **main**
-4. Choose **/(root)**
-5. Save
+The actual references live only in:
+- `refs.js`
 
-The homepage is `index.html`.
+So you do **not** need a new version of the website every time you publish.
 
-## Editing references
+## Add a new reference
 
-Duplicate any `<article class="ref">...</article>` block in `index.html` to add a new reference.
+Open `new-ref.html` in your browser.
 
-Replace:
-- `REF.001`
-- category
-- location
-- project / artist name
-- description
+1. Fill in the reference.
+2. Click **Generate updated refs.js**.
+3. A new `refs.js` file is downloaded.
+4. In GitHub, replace the old `refs.js` with the new one.
+5. Commit the change.
 
-Later, image placeholders can be replaced with real images.
+GitHub Pages updates the archive automatically.
+
+## Images
+
+REF. can display images, but the editor only includes an image when you mark it as:
+- your own image,
+- used with permission,
+- or licensed / allowed for reuse.
+
+If none of those apply, the reference still works with its title, author, note and **View original ↗** link.
+
+## Principle
+
+**REF. is not the work. REF. points to it.**

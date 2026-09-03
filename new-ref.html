@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>NEW REF.</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="index.html">REF.</a>
+  <nav><a href="index.html">Back to archive</a></nav>
+</header>
+
+<main class="editor-shell">
+  <h1>NEW REF.</h1>
+  <p class="editor-note">
+    Temporary publishing panel. Fill in the fields, download the updated <code class="inline">refs.js</code>,
+    then replace that file in GitHub. The design itself never changes.
+  </p>
+
+  <form id="refForm">
+    <div class="form-grid">
+      <div class="field">
+        <label for="artist">Artist / Studio</label>
+        <input id="artist" required>
+      </div>
+      <div class="field">
+        <label for="title">Project / Work</label>
+        <input id="title" required>
+      </div>
+      <div class="field">
+        <label for="category">Category</label>
+        <input id="category" placeholder="Illustration / Editorial">
+      </div>
+      <div class="field">
+        <label for="location">Location</label>
+        <input id="location" placeholder="Madrid, ES">
+      </div>
+      <div class="field full">
+        <label for="sourceUrl">Original source URL</label>
+        <input id="sourceUrl" type="url" required placeholder="https://...">
+      </div>
+      <div class="field full">
+        <label for="note">REF. note</label>
+        <textarea id="note" placeholder="Why is this worth keeping for reference?"></textarea>
+      </div>
+      <div class="field">
+        <label for="client">Client (optional)</label>
+        <input id="client">
+      </div>
+      <div class="field">
+        <label for="commissionedBy">Commissioned by (optional)</label>
+        <input id="commissionedBy">
+      </div>
+      <div class="field full">
+        <label for="image">Image URL or local path (optional)</label>
+        <input id="image" placeholder="images/ref-002.jpg or https://...">
+      </div>
+      <div class="field full">
+        <label for="imageCredit">Image credit (if image is displayed)</label>
+        <input id="imageCredit" placeholder="© Artist / Photographer / Studio">
+      </div>
+      <div class="field full">
+        <label for="permission">Image rights status</label>
+        <select id="permission">
+          <option value="not-set">Do not display yet</option>
+          <option value="permission">I have permission</option>
+          <option value="licensed">Licensed / allowed for reuse</option>
+          <option value="own">My own image</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit">Generate updated refs.js</button>
+      <button type="button" class="secondary" id="clearBtn">Clear</button>
+    </div>
+  </form>
+
+  <div class="preview">
+    <div class="small">
+      Images are only included when the rights status is set to permission, licensed, or own.
+      If not, REF. keeps the source link but does not display the image.
+    </div>
+  </div>
+</main>
+
+<script src="refs.js"></script>
+<script>
+const form = document.getElementById("refForm");
+const clearBtn = document.getElementById("clearBtn");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const refs = Array.isArray(window.REFS) ? [...window.REFS] : [];
+  const nextId = String(refs.length + 1).padStart(3, "0");
+  const permission = document.getElementById("permission").value;
+  const canShowImage = ["permission","licensed","own"].includes(permission);
+
+  const item = {
+    id: nextId,
+    artist: document.getElementById("artist").value.trim(),
+    title: document.getElementById("title").value.trim(),
+    category: document.getElementById("category").value.trim(),
+    location: document.getElementById("location").value.trim(),
+    note: document.getElementById("note").value.trim(),
+    client: document.getElementById("client").value.trim(),
+    commissionedBy: document.getElementById("commissionedBy").value.trim(),
+    sourceUrl: document.getElementById("sourceUrl").value.trim(),
+    image: canShowImage ? document.getElementById("image").value.trim() : "",
+    imageCredit: canShowImage ? document.getElementById("imageCredit").value.trim() : "",
+    imagePermission: permission
+  };
+
+  refs.push(item);
+  const fileContent = "window.REFS = " + JSON.stringify(refs, null, 2) + ";\\n";
+  const blob = new Blob([fileContent], {type:"text/javascript"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "refs.js";
+  a.click();
+  URL.revokeObjectURL(url);
+  alert(`REF.${nextId} generated. Replace refs.js in GitHub and commit the change.`);
+});
+
+clearBtn.addEventListener("click", () => form.reset());
+</script>
+</body>
+</html>
